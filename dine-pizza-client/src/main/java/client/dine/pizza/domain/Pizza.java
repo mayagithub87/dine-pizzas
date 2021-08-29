@@ -29,9 +29,9 @@ public class Pizza {
     public String toString() {
         final String[] toppingsString = {""};
         if (this.toppings.size() > 0) {
-            this.toppings.forEach(topping -> toppingsString[0] += "\n" + topping.toString());
+            this.toppings.forEach(topping -> toppingsString[0] += "\n . " + topping.toString());
         }
-        return "Pizza [id=" + this.id + ", toppings= " + this.toppings.size() + "] \n" + toppingsString[0];
+        return "Pizza [toppings = " + this.toppings.size() + " ]: " + toppingsString[0];
     }
 
 }
