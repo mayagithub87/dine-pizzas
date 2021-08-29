@@ -8,29 +8,21 @@ import lombok.Setter;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Getter(AccessLevel.PUBLIC)
 @Setter
 @NoArgsConstructor
 public class Pizza {
 
-
+    @JsonIgnore
     private long id;
-
-//   private long orderId;
 
     private List<Topping> toppings;
 
-    public Pizza(long id, List<Topping> toppings) {
-        this.id = id; // optional, create generator of Id autoincrement
+    public Pizza(List<Topping> toppings) {
+        //this.id = id; // optional, create generator of Id autoincrement
         this.toppings = toppings;
-    }
-
-    public long getId() {
-        return this.id;
-    }
-
-    public List<Topping> getToppings() {
-        return this.toppings;
     }
 
     @Override

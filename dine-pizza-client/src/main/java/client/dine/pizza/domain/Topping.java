@@ -16,7 +16,6 @@ public class Topping {
 
     private String name;
 
-    @JsonIgnore
     private int quantity;
 
     public Topping(String name, Integer quantity) {

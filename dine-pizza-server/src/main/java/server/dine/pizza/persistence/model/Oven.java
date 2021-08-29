@@ -43,7 +43,7 @@ public class Oven {
         if (this.bakingOrder != null) {
             orderString = this.bakingOrder.toString();
         }
-        return "Oven [id=" + this.id + ", baking time= " + this.bakingClock + "/" + this.bakingTime + ", current baking order= " + bakingOrder + "]";
+        return "Oven [id=" + this.id + ", baking time= " + this.bakingClock + "/" + this.bakingTime + ", current baking order= " + orderString + "]";
     }
 
     public boolean isBusy() {
