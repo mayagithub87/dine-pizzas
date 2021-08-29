@@ -13,12 +13,9 @@ import java.util.List;
 @NoArgsConstructor
 public class Order {
 
-    //    @Id
-//    @Column(name = "id")
     private long id;
 
-    //    @Column(name = "name")
-    private String customerName;
+    private String name;
 
     private List<Pizza> pizzas;
 
@@ -28,7 +25,7 @@ public class Order {
         if (this.pizzas.size() > 0) {
             this.pizzas.forEach(pizza -> pizzasString[0] += "\n" + pizza.toString());
         }
-        return "Order [id=" + this.id + ", client= " + this.customerName + ", pizzas= " + this.pizzas.size()
+        return "Order [id=" + this.id + ", client= " + this.name + ", pizzas= " + this.pizzas.size()
                 + "] \n" + pizzasString[0];
     }
 

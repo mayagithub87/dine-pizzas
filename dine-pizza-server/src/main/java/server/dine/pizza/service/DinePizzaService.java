@@ -92,7 +92,7 @@ public class DinePizzaService {
         if (checkToppingsAvailability(order.getPizzas()))
             ordersPending.add(order);
         else
-            throw new NotValidException(String.format("%s we are sorry, there is no availability for your order.", order.getCustomerName()));
+            throw new NotValidException(String.format("%s we are sorry, there is no availability for your order.", order.getName()));
 
         return order;
     }
