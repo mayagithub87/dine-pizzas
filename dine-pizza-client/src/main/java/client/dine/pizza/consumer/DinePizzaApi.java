@@ -31,7 +31,7 @@ public class DinePizzaApi {
     }
 
     public List<Topping> getToppins() {
-        String endpoint = "orders";
+        String endpoint = "toppings";
         List<Topping> toppings = null;
         ResponseEntity<List<Topping>> responseEntity =
                 restTemplate.exchange(serverApiUrl + endpoint, HttpMethod.GET, null, new ParameterizedTypeReference<List<Topping>>() {
@@ -53,7 +53,7 @@ public class DinePizzaApi {
     }
 
     public List<Order> getOrders() {
-        String endpoint = "orders/status";
+        String endpoint = "orders";
         List<Order> orders = null;
         ResponseEntity<List<Order>> responseEntity =
                 restTemplate.exchange(serverApiUrl + endpoint, HttpMethod.GET, null, new ParameterizedTypeReference<List<Order>>() {

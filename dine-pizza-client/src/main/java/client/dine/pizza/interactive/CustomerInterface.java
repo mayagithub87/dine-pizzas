@@ -73,7 +73,7 @@ public class CustomerInterface {
             } while (!exitMenu);
             
         } catch (Exception e) {
-            System.out.printf("\n SYSTEM ERROR: %s", e.getMessage());
+            System.out.printf("\n SYSTEM ERROR => %s\n", e.getMessage());
         }
     }
 
@@ -145,7 +145,7 @@ public class CustomerInterface {
             } while (addPizza);
 
         } catch (Exception e) {
-            System.out.printf("\n SYSTEM ERROR: %s", e.getMessage());
+            System.out.printf("\n SYSTEM ERROR => %s\n", e.getMessage());
         } 
     }
 
@@ -269,7 +269,7 @@ public class CustomerInterface {
                 } while (addTopping);
             }
         } catch (Exception e) {
-            System.out.printf("\n SYSTEM ERROR: %s", e.getMessage());
+            System.out.printf("\n SYSTEM ERROR => %s\n", e.getMessage());
         } finally {
             return selection;
         }
@@ -286,9 +286,9 @@ public class CustomerInterface {
             System.out.println("\n Sending order ...");
             Order addedOrder = api.addOrder(newOrder);
             System.out.println("\n Order sent successfully:\n");
-            System.out.printf(" - %s", addedOrder.toString());
+            System.out.printf(" - %s \n", addedOrder.toString());
         } catch (Exception e) {
-            System.out.printf("\n SYSTEM ERROR: %s", e.getMessage());
+            System.out.printf("\n SYSTEM ERROR => %s\n", e.getMessage());
         } finally {
             System.out.println("\n Type any value to return to the previous Menu");
             scanner.nextLine();
@@ -316,7 +316,7 @@ public class CustomerInterface {
                 }
             }
         } catch (Exception e) {
-            System.out.printf("\n SYSTEM ERROR: %s", e.getMessage());
+            System.out.printf("\n SYSTEM ERROR => %s\n", e.getMessage());
         } finally {
             System.out.printf("\n Type any value to return to the Main Menu: ");
             scanner.nextLine();
