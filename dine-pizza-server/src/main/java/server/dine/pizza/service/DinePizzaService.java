@@ -294,4 +294,15 @@ public class DinePizzaService {
                 }
         );
     }
+
+    /**
+     * Adds a new oven to dine pizza.
+     *
+     * @return
+     */
+    public Oven addOven() {
+        Oven oven = new Oven(bakingTime);
+        ovens.add(oven);
+        return oven;
+    }
 }

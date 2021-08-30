@@ -1,5 +1,6 @@
 package server.dine.pizza.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,6 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 public class Order {
 
+    @JsonIgnore
     private long id;
 
     private Status status;
