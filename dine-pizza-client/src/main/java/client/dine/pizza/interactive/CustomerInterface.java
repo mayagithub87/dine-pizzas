@@ -64,6 +64,7 @@ public class CustomerInterface {
                     // exit
                     case "3":
                         exitMenu = true;
+                        scanner.close();
                         System.out.println("\n Good bye. Come back soon! \n\n");
                         break;
                     default:
