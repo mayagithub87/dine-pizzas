@@ -109,7 +109,7 @@ public class CustomerInterface {
                 // display order menu
                 System.out.println(" - Option #1 Add Pizza");
                 System.out.println(" - Option #2 Finish and Send Order");
-                System.out.println(" - Option #3 Return to Main Menu");
+                System.out.println(" - Option #3 Discard and Return to Main Menu");
                 System.out.printf("\n %s, please select option: ", name);
                 // order menu options
                 switch(scanner.nextLine()) {
@@ -307,17 +307,17 @@ public class CustomerInterface {
             System.out.println("**********************************************\n");
             List<Order> orders = api.getOrders();
             if (orders == null || orders.isEmpty()) {
-                System.out.println("\n Sorry, there are not available orders on the server.\n Please, create a new one.");
+                System.out.println("\n Sorry, there are not available orders on the server.\n Please, create a new one.\n");
             } else {
                 // display all order formatted
                 for (int index = 0; index < orders.size(); index++) {
-                    System.out.printf(" - #%d: %s \n", index+1, orders.get(index).toString());
+                    System.out.printf(" - #%d: %s \n\n", index+1, orders.get(index).toString());
                 }
             }
         } catch (Exception e) {
             System.out.printf("\n SYSTEM ERROR: %s", e.getMessage());
         } finally {
-            System.out.printf("\n\n Type any value to return to the Main Menu: ");
+            System.out.printf("\n Type any value to return to the Main Menu: ");
             scanner.nextLine();
         }
     }
