@@ -4,25 +4,30 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import server.dine.pizza.core.exception.NotValidException;
+import server.dine.pizza.core.api.exception.*;
 import server.dine.pizza.domain.tdo.CQueue;
-import server.dine.pizza.persistence.model.Order;
-import server.dine.pizza.persistence.model.Oven;
-import server.dine.pizza.persistence.model.Pizza;
-import server.dine.pizza.persistence.model.Topping;
+import server.dine.pizza.model.Order;
+import server.dine.pizza.model.Oven;
+import server.dine.pizza.model.Pizza;
+import server.dine.pizza.model.Topping;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.stream.Collectors;
 
 @Service
 public class DinePizzaService {
+
+    @Value("${ovens-count}")
+    private int ovensCount;
 
     @Value("${baking-time}")
     private int bakingTime;
@@ -46,12 +51,43 @@ public class DinePizzaService {
         return (this.ovens.size() > 0 && this.toppingsInventory.size() > 0);
     }
 
-    public DinePizzaService() {
-//        adding two ovens as specified
-        //TODO improve this
-        ovens.add(new Oven(bakingTime));
-        ovens.add(new Oven(bakingTime));
+    public DinePizzaService() throws IOException {
+        retrieveDineData();
         //the process of backing will be done by a cron
+    }
+
+    /**
+     * Records input user for dine pizza configuration.
+     * Inventory.csv
+     * Ovens Amount
+     * Baking Time
+     */
+    private void retrieveDineData() throws IOException {
+        Scanner scanner = new Scanner(System.in);
+        String filePath = null;
+        int ovens = 0, bakingTime = 0;
+
+        System.out.println("Dine Pizza Server is about to start");
+        System.out.println("Please specify inventory.csv path: ");
+
+        do {
+            if ((filePath = scanner.nextLine()) != null && !filePath.isEmpty())
+                loadInventory(filePath);
+        } while (outOfProvisions());
+
+        System.out.println("Please specify ovens amount: ");
+        if ((filePath = scanner.nextLine()) != null && (ovens = Integer.parseInt(filePath)) > 0) {
+            this.ovensCount = ovens;
+            System.out.printf("Ovens amount set [%d]\n", ovens);
+        } else
+            System.out.printf("Default ovens amount set [%d]\n", ovens);
+
+        System.out.println("Please ovens baking time in seconds: ");
+        if ((filePath = scanner.nextLine()) != null && (bakingTime = Integer.parseInt(filePath)) > 0) {
+            this.bakingTime = bakingTime;
+            System.out.printf("Baking time set [%d] seconds\n", bakingTime);
+        } else
+            System.out.printf("Default baking time set [%d] seconds\n", bakingTime);
     }
 
     /**
@@ -60,7 +96,7 @@ public class DinePizzaService {
      * @param filePath
      */
     public void loadInventory(String filePath) throws IOException {
-        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath.trim()))) {
             String line;
             while ((line = br.readLine()) != null) {
                 if (line.contains(CSV_HEADER))
@@ -163,6 +199,16 @@ public class DinePizzaService {
      * @return
      */
     public List<Topping> retrieveToppings() {
-        return toppingsInventory;
+        return toppingsInventory.stream().filter(topping -> topping.getQuantity() > 0).collect(Collectors.toList());
     }
+
+    /**
+     * Returns true if dine pizza out of toppings provisions.
+     *
+     * @return
+     */
+    public boolean outOfProvisions() {
+        return toppingsInventory.isEmpty() || toppingsInventory.stream().mapToInt(Topping::getQuantity).sum() == 0;
+    }
+
 }

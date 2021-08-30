@@ -1,4 +1,4 @@
-package server.dine.pizza.persistence.model;
+package server.dine.pizza.model;
 
 import lombok.AccessLevel;
 import lombok.Getter;

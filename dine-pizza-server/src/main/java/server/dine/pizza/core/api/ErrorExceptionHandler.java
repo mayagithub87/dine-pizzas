@@ -1,8 +1,5 @@
-package server.dine.pizza.core;
+package server.dine.pizza.core.api;
 
-import server.dine.pizza.core.exception.AlreadyExistException;
-import server.dine.pizza.core.exception.BadRequestException;
-import server.dine.pizza.core.exception.NotFoundException;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
@@ -12,6 +9,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+import server.dine.pizza.core.api.exception.*;
 
 import java.util.Date;
 
