@@ -40,6 +40,7 @@ public class CustomerInterface {
             boolean exitMenu = false;
             do {
                 // menu display
+                System.out.print("\033[H\033[2J");
                 System.out.println("\n****************************************\n");
                 System.out.println("*** WELCOME TO DINE-IN PIZZA SERVICE ***");
                 System.out.println("\n****************************************\n");
@@ -85,6 +86,7 @@ public class CustomerInterface {
      */
     private void createOrder() {
         try {
+            System.out.print("\033[H\033[2J");
             System.out.println("\n******************************************");
             System.out.println("****** CREATE A PIZZA ORDER MENU *********");
             System.out.println("******************************************\n");
@@ -96,6 +98,7 @@ public class CustomerInterface {
             // menu for adding pizza to the new order
             boolean addPizza = true;
             do {
+                System.out.print("\033[H\033[2J");
                 System.out.println("\n******************************************");
                 System.out.println("******** ADD PIZZA TO ORDER MENU *********");
                 System.out.println("******************************************\n");
@@ -184,6 +187,7 @@ public class CustomerInterface {
                 // menu for adding toppings to the new pizza
                 boolean addTopping = true;
                 do {
+                    System.out.print("\033[H\033[2J");
                     System.out.println("\n**********************************************");
                     System.out.println("***** SELECT TOPPINGS FOR CURRENT PIZZA ******");
                     System.out.println("**********************************************\n");
@@ -283,6 +287,7 @@ public class CustomerInterface {
      */
     private void sendOrder(Order newOrder) {
         try {
+            System.out.print("\033[H\033[2J");
             System.out.println("\n Sending order ...");
             Order addedOrder = api.addOrder(newOrder);
             System.out.println("\n Order sent successfully:\n");
@@ -303,6 +308,7 @@ public class CustomerInterface {
      */
     private void getOrders() {
         try {
+            System.out.print("\033[H\033[2J");
             System.out.println("\n**********************************************");
             System.out.println("**************** VIEW ORDERS *****************");
             System.out.println("**********************************************\n");

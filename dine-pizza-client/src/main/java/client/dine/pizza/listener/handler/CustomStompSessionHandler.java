@@ -1,5 +1,6 @@
 package client.dine.pizza.listener.handler;
 
+import client.dine.pizza.domain.CountdownClock;
 import client.dine.pizza.domain.WebsocketMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,7 +31,7 @@ public class CustomStompSessionHandler implements StompSessionHandler {
     public void handleFrame(StompHeaders headers, Object payload) {
         WebsocketMessage msg = (WebsocketMessage) payload;
         // logger.info("Dine Pizza Notification: " + msg.getContent());
-        System.out.printf("\n NOTIFICATION => Dine Pizza Server: %s\n", msg.getContent());
+        System.out.printf("\n\t\t\t\t\t NOTIFICATION => Dine Pizza Server: %d \n\t\t\t\t\t %s\n", msg.getCountdown(), msg.getContent());
     }
 
     @Override
@@ -45,7 +46,10 @@ public class CustomStompSessionHandler implements StompSessionHandler {
             @Override
             public void handleFrame(StompHeaders stompHeaders, Object payload) {
                 WebsocketMessage msg = (WebsocketMessage) payload;
-                System.out.printf("\n NOTIFICATION => Dine Pizza Server: %s\n", msg.getContent());
+                System.out.printf("\n\t\t\t\t\t NOTIFICATION => Dine Pizza Server: %d \n\t\t\t\t\t %s\n", msg.getCountdown(), msg.getContent());
+                if (msg.getCountdown() > 0) {
+                    new CountdownClock(msg.getCountdown(), "\t\t\t\t\t ");
+                }
                 // logger.info("Dine Pizza Notificationx: " + msg.getContent());
             }
         });
