@@ -4,8 +4,8 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-import server.dine.pizza.model.Order;
-import server.dine.pizza.model.Topping;
+import server.dine.pizza.domain.model.Order;
+import server.dine.pizza.domain.model.Topping;
 import server.dine.pizza.service.DinePizzaService;
 
 import javax.validation.Valid;
@@ -38,6 +38,12 @@ public class OrdersController {
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Topping> availableToppings() {
         return dinePizzaService.retrieveToppings();
+    }
+
+    @ApiOperation(value = "Returns orders status")
+    @GetMapping(value = "/status", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public List<Order> ordersStatus() {
+        return dinePizzaService.getOrdersStatus();
     }
 
 }

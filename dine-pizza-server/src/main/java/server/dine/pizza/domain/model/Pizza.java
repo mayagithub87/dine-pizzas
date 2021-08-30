@@ -1,4 +1,4 @@
-package server.dine.pizza.model;
+package server.dine.pizza.domain.model;
 
 
 import lombok.AccessLevel;
@@ -13,11 +13,8 @@ import java.util.List;
 @NoArgsConstructor
 public class Pizza {
 
-    //    @Id
-//    @Column(name = "id")
     private long id;
 
-//   @Column(name = "order_id")     Only if DB
 //   private long orderId;
 
     private List<Topping> toppings;

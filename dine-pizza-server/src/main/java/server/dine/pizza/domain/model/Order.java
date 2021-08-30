@@ -1,4 +1,4 @@
-package server.dine.pizza.model;
+package server.dine.pizza.domain.model;
 
 import lombok.AccessLevel;
 import lombok.Getter;

@@ -1,4 +1,4 @@
-package server.dine.pizza.model;
+package server.dine.pizza.domain.model;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -10,14 +10,10 @@ import lombok.Setter;
 @NoArgsConstructor
 public class Topping {
 
-    //    @Id
-//    @Column(name = "id")
     private long id;
 
-    //    @Column(name = "name")
     private String name;
 
-    //    @Column(name = "quantity")
     private int quantity;
 
     public Topping(String name, Integer quantity) {

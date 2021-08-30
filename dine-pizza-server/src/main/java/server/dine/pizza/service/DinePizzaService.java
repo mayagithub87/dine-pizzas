@@ -4,12 +4,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import server.dine.pizza.core.api.exception.*;
+import server.dine.pizza.core.api.exception.NotValidException;
+import server.dine.pizza.domain.model.Order;
+import server.dine.pizza.domain.model.Oven;
+import server.dine.pizza.domain.model.Pizza;
+import server.dine.pizza.domain.model.Topping;
 import server.dine.pizza.domain.tdo.CQueue;
-import server.dine.pizza.model.Order;
-import server.dine.pizza.model.Oven;
-import server.dine.pizza.model.Pizza;
-import server.dine.pizza.model.Topping;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -30,7 +30,7 @@ public class DinePizzaService {
     private int ovensCount;
 
     @Value("${baking-time}")
-    private int bakingTime;
+    public int bakingTime;
 
     private static final String COMMA_DELIMITER = ",";
     private static final String CSV_HEADER = "TOPPING";
@@ -42,18 +42,15 @@ public class DinePizzaService {
 
     private List<Topping> toppingsInventory = new ArrayList<>();
     private List<Oven> ovens = new ArrayList<>();
-    private List<Order> ordersReady = new ArrayList<>();
-    private CQueue<Order> ordersPending = new CQueue<>();
-
-    // when you set up the ovens with time and you load the toppings is when you can know that you are ready to work
-    // endpoint
-    public boolean isReady() {
-        return (this.ovens.size() > 0 && this.toppingsInventory.size() > 0);
-    }
+    private List<Order> readyOrders = new ArrayList<>();
+    private CQueue<Order> pendingOrders = new CQueue<>();
 
     public DinePizzaService() throws IOException {
         retrieveDineData();
-        //the process of backing will be done by a cron
+        // create ovens
+        for (int i = 0; i < ovensCount; i++) {
+            ovens.add(new Oven(bakingTime));
+        }
     }
 
     /**
@@ -88,6 +85,9 @@ public class DinePizzaService {
             System.out.printf("Baking time set [%d] seconds\n", bakingTime);
         } else
             System.out.printf("Default baking time set [%d] seconds\n", bakingTime);
+
+        System.out.println("Everything is set up!");
+
     }
 
     /**
@@ -126,7 +126,7 @@ public class DinePizzaService {
      */
     public Order addOder(Order order) {
         if (checkToppingsAvailability(order.getPizzas()))
-            ordersPending.add(order);
+            pendingOrders.add(order);
         else
             throw new NotValidException(String.format("%s we are sorry, there is no availability for your order.", order.getName()));
 
@@ -211,4 +211,59 @@ public class DinePizzaService {
         return toppingsInventory.isEmpty() || toppingsInventory.stream().mapToInt(Topping::getQuantity).sum() == 0;
     }
 
+    /**
+     * Returns true if there are pending orders.
+     *
+     * @return
+     */
+    public boolean hasPendingOrders() {
+        return pendingOrders.size() > 0;
+    }
+
+    /**
+     * Returns true if there are free ovens for baking orders.
+     *
+     * @return
+     */
+    public boolean hasFreeOvens() {
+        return ovens.stream().anyMatch(oven -> !oven.isBusy());
+    }
+
+    /**
+     * Returns true if there are any ovens baking orders already.
+     *
+     * @return
+     */
+    public boolean hasBusyOvens() {
+        return ovens.stream().anyMatch(oven -> oven.isBusy());
+    }
+
+    public void processOrders() {
+        ovens.stream().filter(oven -> !oven.isBusy()).forEach(
+                oven -> {
+                    if (pendingOrders.size() > 0) {
+                        Order order = pendingOrders.poll();
+                        oven.bakeOrder(order);
+                        logger.info("oven is baking order {}", order.toString());
+                    }
+                }
+        );
+    }
+
+    public List<Order> getOrdersStatus() {
+        return null;
+    }
+
+    public void releaseOvens() {
+        ovens.stream().filter(oven -> oven.isBusy()).forEach(
+                oven -> {
+                    if (oven.isDone()) {
+                        Order order = oven.getOrder();
+                        readyOrders.add(order);
+                        oven.release();
+                        logger.info("oven released order {}", order.toString());
+                    }
+                }
+        );
+    }
 }
