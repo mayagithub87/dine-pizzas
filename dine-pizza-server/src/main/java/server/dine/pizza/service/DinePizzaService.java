@@ -5,10 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import server.dine.pizza.core.api.exception.NotValidException;
-import server.dine.pizza.domain.model.Order;
-import server.dine.pizza.domain.model.Oven;
-import server.dine.pizza.domain.model.Pizza;
-import server.dine.pizza.domain.model.Topping;
+import server.dine.pizza.domain.model.*;
 import server.dine.pizza.domain.tdo.CQueue;
 
 import java.io.BufferedReader;
@@ -125,9 +122,10 @@ public class DinePizzaService {
      * @return
      */
     public Order addOder(Order order) {
-        if (checkToppingsAvailability(order.getPizzas()))
+        if (checkToppingsAvailability(order.getPizzas())) {
+            order.setStatus(Status.PENDING);
             pendingOrders.add(order);
-        else
+        } else
             throw new NotValidException(String.format("%s we are sorry, there is no availability for your order.", order.getName()));
 
         return order;
@@ -238,11 +236,15 @@ public class DinePizzaService {
         return ovens.stream().anyMatch(oven -> oven.isBusy());
     }
 
+    /**
+     * Filters free ovens and bakes pending orders.
+     */
     public void processOrders() {
         ovens.stream().filter(oven -> !oven.isBusy()).forEach(
                 oven -> {
                     if (pendingOrders.size() > 0) {
                         Order order = pendingOrders.poll();
+                        order.setStatus(Status.BAKING);
                         oven.bakeOrder(order);
                         logger.info("oven is baking order {}", order.toString());
                     }
@@ -250,15 +252,34 @@ public class DinePizzaService {
         );
     }
 
+    /**
+     * Returns all orders and its corresponding statuses.
+     *
+     * @return
+     */
     public List<Order> getOrdersStatus() {
-        return null;
+        // baking
+        List<Order> list = ovens.stream().filter(oven -> oven.isBusy()).map(Oven::getOrder).collect(Collectors.toList());
+        if (list == null)
+            list = new ArrayList<>();
+        else
+            //ready
+            list.addAll(readyOrders);
+        //pending
+        if (!pendingOrders.isEmpty())
+            list.addAll(pendingOrders);
+        return list;
     }
 
+    /**
+     * Checks if orders has elapsed baking time for releasing corresponding oven.
+     */
     public void releaseOvens() {
         ovens.stream().filter(oven -> oven.isBusy()).forEach(
                 oven -> {
                     if (oven.isDone()) {
                         Order order = oven.getOrder();
+                        order.setStatus(Status.FINISHED);
                         readyOrders.add(order);
                         oven.release();
                         logger.info("oven released order {}", order.toString());

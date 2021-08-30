@@ -41,7 +41,7 @@ public class OrdersController {
     }
 
     @ApiOperation(value = "Returns orders status")
-    @GetMapping(value = "/status", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/status", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Order> ordersStatus() {
         return dinePizzaService.getOrdersStatus();
     }

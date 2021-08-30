@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-
 import java.util.List;
 
 @Getter(AccessLevel.PUBLIC)
@@ -14,6 +13,8 @@ import java.util.List;
 public class Order {
 
     private long id;
+
+    private Status status;
 
     private String name;
 
@@ -25,8 +26,8 @@ public class Order {
         if (this.pizzas.size() > 0) {
             this.pizzas.forEach(pizza -> pizzasString[0] += "\n" + pizza.toString());
         }
-        return "Order [id=" + this.id + ", client= " + this.name + ", pizzas= " + this.pizzas.size()
-                + "] \n" + pizzasString[0];
+        return "Order [status=" + this.status + ", client= " + this.name + ", pizzas= " + this.pizzas.size()
+                + "] " + pizzasString[0];
     }
 
 }

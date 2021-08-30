@@ -15,6 +15,7 @@ public class OvensManager {
 
     public OvensManager(DinePizzaService dinePizzaService) {
         this.dinePizzaService = dinePizzaService;
+        this.cronDelay = cronDelay * 1000;
     }
 
     /**
