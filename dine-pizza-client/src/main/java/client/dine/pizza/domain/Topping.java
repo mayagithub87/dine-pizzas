@@ -31,7 +31,7 @@ public class Topping {
 
     @Override
     public String toString() {
-        return "Topping [name=" + this.name + ", quantity=" + this.quantity + "]";
+        return "Topping [name = " + this.name + ", quantity = " + this.quantity + " ]";
     }
 
 }
