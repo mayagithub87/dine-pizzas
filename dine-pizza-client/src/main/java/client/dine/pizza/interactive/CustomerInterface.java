@@ -40,9 +40,9 @@ public class CustomerInterface {
             boolean exitMenu = false;
             do {
                 // menu display
-                System.out.println("\n ****************************************\n");
-                System.out.println("\n *** WELCOME TO DINE-IN PIZZA SERVICE ***\n");
-                System.out.println("\n ****************************************\n");
+                System.out.println("\n****************************************\n");
+                System.out.println("*** WELCOME TO DINE-IN PIZZA SERVICE ***");
+                System.out.println("\n****************************************\n");
 
                 System.out.println("\n****************************************");
                 System.out.println("************** MAIN MENU ***************");
