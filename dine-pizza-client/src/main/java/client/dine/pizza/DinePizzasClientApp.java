@@ -14,7 +14,7 @@ public class DinePizzasClientApp implements CommandLineRunner {
 
     public static void main(String[] args) {
         SpringApplication app = new SpringApplication(DinePizzasClientApp.class);
-        app.run(args);
+        app.run(args).close();;
     }
 
     @Override
