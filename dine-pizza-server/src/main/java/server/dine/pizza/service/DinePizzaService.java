@@ -261,7 +261,8 @@ public class DinePizzaService {
                         order.setStatus(Status.BAKING);
                         oven.bakeOrder(order);
                         logger.info("oven is baking order {}", order.toString());
-                        webSocketController.sendMessage(String.format("%s your order is baking.", order.getName()));
+                        int countdown = order.getPizzas().size() * bakingTime;
+                        webSocketController.sendMessage(String.format("%s your order is processing.", order.getName()), countdown, order.getName());
                     }
                 }
         );

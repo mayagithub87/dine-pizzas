@@ -24,4 +24,11 @@ public class WebSocketController {
         }
     }
 
+    public void sendMessage(String message, int countdown, String customer) {
+        try {
+            template.convertAndSend("/customer", new WebsocketMessage(message, customer, countdown));
+        } catch (Throwable ex) {
+            logger.error("sending message through websocket", ex);
+        }
+    }
 }
