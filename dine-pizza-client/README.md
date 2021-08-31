@@ -1,8 +1,9 @@
 # Dine Pizza Client
 
 ### Requisites
-* VSCode or intelliJ Idea IDE
+* JDK 1.8 minimum
 * Maven installed
+* VSCode or intelliJ Idea IDE
 
 ### Build and Run Project
 
@@ -12,9 +13,10 @@ Execute the following command for putting up and running client project.
 
 ### Configuration
 
-At resources folder, the file application.properties may be configured for updanting server api url.
+At resources folder, the file application.properties may be configured for updanting server api url and websocket for listening server notifications.
 
 `
-dine-pizza-api-url=http://localhost:8080/dine-pizza-server
+dine-pizza-api-url=http://localhost:8081/dine-pizza-server
+dine-pizza-websocket-url=ws://localhost:8081/dine-pizza-server/dine-pizza-websocket
 `
 

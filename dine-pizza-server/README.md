@@ -1,8 +1,9 @@
 # Dine Pizza Server
 
 ### Requisites
-* VSCode or intelliJ Idea IDE
+* JDK 1.8 minimum
 * Maven installed
+* VSCode or intelliJ Idea IDE
 
 ### Build and Run Project
 
