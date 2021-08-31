@@ -2,9 +2,11 @@ package server.dine.pizza.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import server.dine.pizza.core.api.exception.NotValidException;
+import server.dine.pizza.core.websocket.WebSocketController;
 import server.dine.pizza.domain.model.*;
 import server.dine.pizza.domain.tdo.CQueue;
 
@@ -22,6 +24,9 @@ import java.util.stream.Collectors;
 
 @Service
 public class DinePizzaService {
+
+    @Autowired
+    private WebSocketController webSocketController;
 
     @Value("${ovens-count}")
     private int ovensCount;
@@ -247,6 +252,7 @@ public class DinePizzaService {
                         order.setStatus(Status.BAKING);
                         oven.bakeOrder(order);
                         logger.info("oven is baking order {}", order.toString());
+                        webSocketController.sendMessage(String.format("%s your order is been baked.", order.getName()));
                     }
                 }
         );
@@ -283,6 +289,7 @@ public class DinePizzaService {
                         readyOrders.add(order);
                         oven.release();
                         logger.info("oven released order {}", order.toString());
+                        webSocketController.sendMessage(String.format("%s your order is ready.", order.getName()));
                     }
                 }
         );

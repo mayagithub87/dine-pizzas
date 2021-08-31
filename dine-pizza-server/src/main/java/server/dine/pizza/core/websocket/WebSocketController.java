@@ -16,9 +16,9 @@ public class WebSocketController {
         this.template = template;
     }
 
-    public void sendMessage(String customer, String message) {
+    public void sendMessage(String message) {
         try {
-            template.convertAndSend("/customer/" + customer, new WebsocketMessage(message));
+            template.convertAndSend("/customer", new WebsocketMessage(message));
         } catch (Throwable ex) {
             logger.error("sending message through websocket", ex);
         }
