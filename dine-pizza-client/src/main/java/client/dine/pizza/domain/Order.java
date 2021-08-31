@@ -32,9 +32,9 @@ public class Order {
     public String toString() {
         final String[] pizzasString = {""};
         if (this.pizzas.size() > 0) {
-            this.pizzas.forEach(pizza -> pizzasString[0] += "\n" + pizza.toString());
+            this.pizzas.forEach(pizza -> pizzasString[0] += "\n * " + pizza.toString());
         }
-        return "Order [status=" + this.status + ", client= " + this.name + ", pizzas= " + this.pizzas.size()
+        return "Order [status = " + this.status + ", client = " + this.name + ", pizzas = " + this.pizzas.size()
                 + "] " + pizzasString[0];
     }
 
