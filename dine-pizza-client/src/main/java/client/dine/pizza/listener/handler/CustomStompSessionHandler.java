@@ -29,7 +29,8 @@ public class CustomStompSessionHandler implements StompSessionHandler {
     @Override
     public void handleFrame(StompHeaders headers, Object payload) {
         WebsocketMessage msg = (WebsocketMessage) payload;
-        logger.info("Dine Pizza Notification: " + msg.getContent());
+        // logger.info("Dine Pizza Notification: " + msg.getContent());
+        System.out.printf("\n NOTIFICATION => Dine Pizza Server: %s\n", msg.getContent());
     }
 
     @Override
@@ -44,7 +45,8 @@ public class CustomStompSessionHandler implements StompSessionHandler {
             @Override
             public void handleFrame(StompHeaders stompHeaders, Object payload) {
                 WebsocketMessage msg = (WebsocketMessage) payload;
-                logger.info("Dine Pizza Notification: " + msg.getContent());
+                System.out.printf("\n NOTIFICATION => Dine Pizza Server: %s\n", msg.getContent());
+                // logger.info("Dine Pizza Notificationx: " + msg.getContent());
             }
         });
     }
