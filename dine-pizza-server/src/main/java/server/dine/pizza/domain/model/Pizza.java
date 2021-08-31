@@ -17,6 +17,9 @@ public class Pizza {
     @JsonIgnore
     private long id;
 
+    @JsonIgnore
+    private String customer;
+
     private List<Topping> toppings;
 
     public Pizza(long id, List<Topping> toppings) {

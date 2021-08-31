@@ -19,7 +19,7 @@ public class Oven {
     private int bakingTime;
 
     @JsonIgnore
-    private Order order;
+    private Pizza pizza;
 
     @JsonIgnore
     private boolean busy;
@@ -27,22 +27,25 @@ public class Oven {
     @JsonIgnore
     private Instant startBake;
 
+    @JsonIgnore
+    private Order order;
+
     public Oven(int bakingTime) {
         this.bakingTime = bakingTime;
-        this.order = null;
+        this.pizza = null;
     }
 
     @Override
     public String toString() {
-        String orderString = "No order processing";
-        if (this.order != null) {
-            orderString = this.order.toString();
+        String pizzaString = "Not busy";
+        if (this.pizza != null) {
+            pizzaString = this.pizza.toString();
         }
-        return "Oven [id=" + this.id + ", baking time= " + this.bakingTime + ", current baking order= " + orderString + "]";
+        return "Oven [id=" + this.id + ", baking time= " + this.bakingTime + ", current baking pizza= " + pizzaString + "]";
     }
 
-    public void bakeOrder(Order order) {
-        this.order = order;
+    public void bakePizza(Pizza pizza) {
+        this.pizza = pizza;
         this.busy = true;
         //set current instant
         this.startBake = Instant.now();
@@ -58,5 +61,9 @@ public class Oven {
     public void release() {
         this.startBake = null;
         this.busy = false;
+    }
+
+    public Order getOrder() {
+        return order;
     }
 }

@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -181,8 +182,10 @@ public class DinePizzaService {
                             .filter(t -> t.getName().equalsIgnoreCase(topping.getName()))
                             .forEach(tu -> {
                                 tu.setQuantity(tu.getQuantity() - topping.getQuantity());
-                                if (tu.getQuantity() < 0)
+                                if (tu.getQuantity() < 0) {
                                     tu.setQuantity(0);
+                                    webSocketController.sendMessage(String.format("Dine Pizza run out of %s topping.", tu.getName().toUpperCase()));
+                                }
                             }));
 
             discounted = true;
@@ -253,19 +256,42 @@ public class DinePizzaService {
     /**
      * Filters free ovens and bakes pending orders.
      */
-    public void processOrders() {
-        ovens.stream().filter(oven -> !oven.isBusy()).forEach(
-                oven -> {
-                    if (pendingOrders.size() > 0) {
-                        Order order = pendingOrders.poll();
-                        order.setStatus(Status.BAKING);
-                        oven.bakeOrder(order);
-                        logger.info("oven is baking order {}", order.toString());
-                        int countdown = order.getPizzas().size() * bakingTime;
-                        webSocketController.sendMessage(String.format("%s your order is processing.", order.getName()), countdown, order.getName());
+    public void processOrder() {
+        if (pendingOrders.size() > 0) {
+
+            Order order = pendingOrders.poll();
+            order.setStatus(Status.PROCESSING);
+
+            List<Pizza> pizzas = order.getPizzas();
+            CQueue<Pizza> pizzasQueue = new CQueue<>();
+            pizzasQueue.addAll(pizzas);
+
+            logger.info("processing order {}", order.toString());
+            int countdown = order.getPizzas().size() * bakingTime;
+            webSocketController.sendMessage(String.format("%s your order is processing.", order.getName()), countdown, order.getName());
+
+            // bake pizzas
+            do {
+
+                AtomicInteger ovensOn = new AtomicInteger(0);
+                this.ovens.stream().filter(oven -> !oven.isBusy()).limit(pizzasQueue.size()).forEach(oven -> {
+                    Pizza pizza = pizzasQueue.poll();
+                    if (pizza != null) {
+                        ovensOn.getAndIncrement();
+                        pizza.setCustomer(order.getName());
+                        oven.setOrder(order);
+                        oven.bakePizza(pizza);
                     }
-                }
-        );
+                });
+//                if (pizzasQueue.size() > 0) {
+//sleep
+//                }
+            } while (pizzasQueue.size() != 0);
+
+            order.setStatus(Status.FINISHED);
+            readyOrders.add(order);
+            webSocketController.sendMessage(String.format("%s your order is ready.", order.getName()));
+        }
     }
 
     /**
@@ -275,7 +301,7 @@ public class DinePizzaService {
      */
     public List<Order> getOrdersStatus() {
         // baking
-        List<Order> list = ovens.stream().filter(oven -> oven.isBusy()).map(Oven::getOrder).collect(Collectors.toList());
+        List<Order> list = ovens.stream().filter(Oven::isBusy).map(Oven::getOrder).collect(Collectors.toList());
         if (list == null)
             list = new ArrayList<>();
         else
@@ -294,12 +320,10 @@ public class DinePizzaService {
         ovens.stream().filter(oven -> oven.isBusy()).forEach(
                 oven -> {
                     if (oven.isDone()) {
-                        Order order = oven.getOrder();
-                        order.setStatus(Status.FINISHED);
-                        readyOrders.add(order);
+                        Pizza pizza = oven.getPizza();
                         oven.release();
-                        logger.info("oven released order {}", order.toString());
-                        webSocketController.sendMessage(String.format("%s your order is ready.", order.getName()));
+                        logger.info("oven baked pizza {}", pizza.toString());
+                        webSocketController.sendMessage(String.format("%s pizza baked %s.", pizza.getCustomer(), pizza.toString()));
                     }
                 }
         );

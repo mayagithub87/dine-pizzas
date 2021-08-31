@@ -2,5 +2,5 @@ package client.dine.pizza.domain;
 
 public enum Status {
 
-    PENDING, BAKING, FINISHED
+    PENDING, PROCESSING, FINISHED
 }
