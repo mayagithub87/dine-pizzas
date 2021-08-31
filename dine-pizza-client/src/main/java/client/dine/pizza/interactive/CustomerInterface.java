@@ -66,7 +66,7 @@ public class CustomerInterface {
                     case "3":
                         exitMenu = true;
                         scanner.close();
-                        System.out.println("\n Good bye. Come back soon! \n\n");
+                        System.out.println("\n Good bye. Cocountme back soon! \n\n");
                         break;
                     default:
                         System.out.printf("\n Invalid Option. Please try again: ");
