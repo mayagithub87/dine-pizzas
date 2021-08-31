@@ -1,5 +1,6 @@
 package server.dine.pizza.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import java.time.Duration;
@@ -12,21 +13,22 @@ import java.time.Instant;
 @AllArgsConstructor
 public class Oven {
 
+    @JsonIgnore
     private long id;
 
     private int bakingTime;
 
-    private int bakingClock;
-
+    @JsonIgnore
     private Order order;
 
+    @JsonIgnore
     private boolean busy;
 
+    @JsonIgnore
     private Instant startBake;
 
     public Oven(int bakingTime) {
         this.bakingTime = bakingTime;
-        this.bakingClock = 0;
         this.order = null;
     }
 
@@ -46,6 +48,7 @@ public class Oven {
         this.startBake = Instant.now();
     }
 
+    @JsonIgnore
     public boolean isDone() {
         // bake time elapsed?
         Instant finishBake = Instant.now();

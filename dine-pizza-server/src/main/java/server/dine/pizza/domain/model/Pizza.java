@@ -1,6 +1,7 @@
 package server.dine.pizza.domain.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,19 +14,14 @@ import java.util.List;
 @NoArgsConstructor
 public class Pizza {
 
+    @JsonIgnore
     private long id;
-
-//   private long orderId;
 
     private List<Topping> toppings;
 
     public Pizza(long id, List<Topping> toppings) {
         this.id = id; // optional, create generator of Id autoincrement
         this.toppings = toppings;
-    }
-
-    public long getId() {
-        return this.id;
     }
 
     public List<Topping> getToppings() {
