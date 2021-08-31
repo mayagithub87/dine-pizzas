@@ -35,7 +35,7 @@ public class DinePizzaService {
     public int bakingTime;
 
     private static final String COMMA_DELIMITER = ",";
-    private static final String CSV_HEADER = "TOPPING";
+    private static final String CSV_HEADER = "ingredient";
 
     private ReadWriteLock lock = new ReentrantReadWriteLock();
     private Lock writeLock = lock.writeLock();
@@ -100,9 +100,12 @@ public class DinePizzaService {
     public void loadInventory(String filePath) throws IOException {
         try (BufferedReader br = new BufferedReader(new FileReader(filePath.trim()))) {
             String line;
+            boolean firstline = true;
             while ((line = br.readLine()) != null) {
-                if (line.contains(CSV_HEADER))
+                if (line.contains(CSV_HEADER) || firstline) {
+                    firstline = false;
                     continue;
+                }
                 String[] values = line.split(COMMA_DELIMITER);
                 String name = values[0].toLowerCase().trim();
                 int quantity = Integer.parseInt(values[1].trim());
@@ -130,6 +133,8 @@ public class DinePizzaService {
         if (checkToppingsAvailability(order.getPizzas())) {
             order.setStatus(Status.PENDING);
             pendingOrders.add(order);
+            webSocketController.sendMessage(String.format("%s your order is pending.", order.getName()));
+
         } else
             throw new NotValidException(String.format("%s we are sorry, there is no availability for your order.", order.getName()));
 
@@ -147,41 +152,45 @@ public class DinePizzaService {
 
         boolean discounted = false;
 
+        //counting order toppings
         final List<Topping> orderToppings = new ArrayList<>();
-        pizzas.stream().forEach(pizza -> {
-            pizza.getToppings().stream().forEach(topping -> {
-                String currentName = topping.getName();
-                if (orderToppings.stream().anyMatch(t -> t.getName().equalsIgnoreCase(currentName))) {
-                    orderToppings.stream()
-                            .filter(t -> t.getName().equalsIgnoreCase(currentName))
-                            .forEach(tu -> tu.setQuantity(tu.getQuantity() + topping.getQuantity()));
-                } else {
-                    orderToppings.add(new Topping(currentName, topping.getQuantity()));
-                }
-            });
-        });
+        pizzas.stream().forEach(pizza -> pizza.getToppings().stream().forEach(topping -> {
+            String currentName = topping.getName();
+            if (orderToppings.stream().anyMatch(t -> t.getName().equalsIgnoreCase(currentName))) {
+                orderToppings.stream()
+                        .filter(t -> t.getName().equalsIgnoreCase(currentName))
+                        .forEach(tu -> tu.setQuantity(tu.getQuantity() + topping.getQuantity()));
+            } else {
+                orderToppings.add(new Topping(currentName, topping.getQuantity()));
+            }
+        }));
 
+        //lock for avoiding topping amount errors
         writeLock.lock();
 
         // is there topping availability
         if (!orderToppings.isEmpty() &&
                 orderToppings.parallelStream()
                         .noneMatch(topping -> toppingsInventory.parallelStream()
-                                .anyMatch(t -> t.getName().equalsIgnoreCase(topping.getName())
-                                        && t.getQuantity() < topping.getQuantity()))) {
+                                .anyMatch(topInventory -> topInventory.getName().equalsIgnoreCase(topping.getName())
+                                        && topInventory.getQuantity() < topping.getQuantity()))) {
 
             // then update inventory
-            orderToppings.parallelStream()
-                    .forEach(topping -> toppingsInventory.parallelStream()
+            orderToppings.stream()
+                    .forEach(topping -> toppingsInventory.stream()
                             .filter(t -> t.getName().equalsIgnoreCase(topping.getName()))
                             .forEach(tu -> {
-                                tu.setQuantity(topping.getQuantity() - tu.getQuantity());
+                                tu.setQuantity(tu.getQuantity() - topping.getQuantity());
                                 if (tu.getQuantity() < 0)
                                     tu.setQuantity(0);
                             }));
 
             discounted = true;
         }
+        // pizzas without toppings may also be baked
+        else if (orderToppings.isEmpty())
+            discounted = true;
+
         writeLock.unlock();
 
         return discounted;
@@ -252,7 +261,7 @@ public class DinePizzaService {
                         order.setStatus(Status.BAKING);
                         oven.bakeOrder(order);
                         logger.info("oven is baking order {}", order.toString());
-                        webSocketController.sendMessage(String.format("%s your order is been baked.", order.getName()));
+                        webSocketController.sendMessage(String.format("%s your order is baking.", order.getName()));
                     }
                 }
         );

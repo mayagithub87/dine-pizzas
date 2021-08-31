@@ -33,9 +33,6 @@ public class DinePizzaController {
     public Oven addOven() {
         return dinePizzaService.addOven();
     }
-//    public Oven addOven(@Valid @RequestBody Oven oven) {
-//        return dinePizzaService.addOven(oven);
-//    }
 
     @ApiOperation(value = "Returns list of available toppings for making orders")
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE,
