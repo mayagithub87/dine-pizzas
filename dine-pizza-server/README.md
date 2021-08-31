@@ -36,3 +36,9 @@ At server startup the inventory.csv path is requested. Please provide it for cor
 API was documented using Swagger library. At the following url you may see the information after project is running:
 
 `http://localhost:8081/dine-pizza-server/swagger-ui/#/orders-controller/`
+
+### Generate Executable Jar
+
+Following line generate a standalone executable client, that may be used typing java -jar 'jar file'.
+
+`./mvnw clean package spring-boot:repackage`

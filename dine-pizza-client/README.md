@@ -20,3 +20,8 @@ dine-pizza-api-url=http://localhost:8081/dine-pizza-server
 dine-pizza-websocket-url=ws://localhost:8081/dine-pizza-server/dine-pizza-websocket
 `
 
+### Generate Executable Jar
+
+Following line generate a standalone executable client, that may be used typing java -jar 'jar file'.
+
+`./mvnw clean package spring-boot:repackage`

@@ -10,6 +10,7 @@
     </parent>
     <groupId>client.dine.pizza</groupId>
     <artifactId>dine-pizza-client</artifactId>
+    <packaging>jar</packaging>
     <version>1.0.0-SNAPSHOT</version>
     <name>dine-pizza-client</name>
     <description>Dine Pizza Client Application</description>
@@ -21,7 +22,7 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-            </dependency>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-websocket</artifactId>
@@ -64,7 +65,16 @@
                             <artifactId>lombok</artifactId>
                         </exclude>
                     </excludes>
+                    <classifier>client.dine.pizza</classifier>
+                    <mainClass>client.dine.pizza.DinePizzasClientApp</mainClass>
                 </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
